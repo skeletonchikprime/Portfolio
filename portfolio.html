@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>skeleton@portfolio</title>
+  <link rel="icon" type="image/x-icon" href="skeleton.ico">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #050a05; display: flex; justify-content: center; padding: 20px; }
+    .term-root { background: #0a0f0a; font-family: 'Share Tech Mono','Courier New',monospace; color: #33ff33; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; width: 100%; max-width: 900px; }
+    .term-bar { background: #1a1a1a; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1e3a1e; flex-shrink: 0; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    .term-title { flex: 1; text-align: center; font-size: 12px; color: #556655; }
+    .term-body { padding: 16px 20px; display: flex; gap: 20px; }
+    .skull-col { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+    .skull-pre { display: block; font-family: 'Courier New','Lucida Console',monospace; font-size: 9px; line-height: 10.8px; color: #33ff33; opacity: 0.9; }
+    .skull-row { display: block; white-space: nowrap; height: 10.8px; }
+    .skull-row span { display: inline-block; width: 6.5px; overflow: hidden; text-align: center; font-family: 'Courier New',monospace; }
+    .main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .prompt-line { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 4px; }
+    .prompt { color: #00dd00; font-size: 13px; } .cmd { color: #ffffff; font-size: 13px; }
+    .output { margin: 6px 0 14px 0; }
+    .out-line { font-size: 12px; line-height: 1.7; color: #aaffaa; }
+    .out-line.dim { color: #557755; } .out-line.bright { color: #ffffff; font-size: 13px; }
+    .out-line.warn { color: #ffcc00; }
+    .nav-section { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .nav-btn { background: transparent; border: 1px solid #1e6a1e; color: #33ff33; font-family: inherit; font-size: 12px; padding: 5px 14px; cursor: pointer; transition: all 0.15s; }
+    .nav-btn:hover { background: #0d2a0d; border-color: #33ff33; color: #fff; }
+    .nav-btn.active { background: #1a4a1a; border-color: #33ff33; color: #00ffaa; }
+    .nav-btn::before { content: '['; color: #557755; } .nav-btn::after { content: ']'; color: #557755; }
+    .sections-container { margin-top: 14px; height: 180px; overflow: hidden; position: relative; }
+    .section { display: none; height: 100%; overflow-y: auto; }
+    .section.visible { display: block; }
+    .section::-webkit-scrollbar { width: 4px; }
+    .section::-webkit-scrollbar-track { background: #0d1a0d; }
+    .section::-webkit-scrollbar-thumb { background: #1e5a1e; border-radius: 2px; }
+    .section::-webkit-scrollbar-thumb:hover { background: #33ff33; }
+    .skill-bar-row { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+    .skill-name { color: #aaffaa; font-size: 11px; width: 90px; }
+    .skill-bar { height: 8px; background: #0d2a0d; border: 1px solid #1e4a1e; flex: 1; overflow: hidden; }
+    .skill-fill { height: 100%; background: #33ff33; }
+    .skill-pct { color: #557755; font-size: 11px; width: 36px; text-align: right; }
+    .cursor { display: inline-block; width: 8px; height: 14px; background: #33ff33; vertical-align: middle; animation: blink 1.1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .divider { color: #1e4a1e; font-size: 12px; margin: 6px 0; }
+    .tag { display: inline-block; border: 1px solid #1e6a1e; color: #66cc66; font-size: 11px; padding: 2px 10px; margin: 3px 3px 3px 0; }
+    .uptime-line { font-size: 11px; color: #336633; margin-top: 16px; border-top: 1px solid #1a2e1a; padding-top: 12px; flex-shrink: 0; }
+
+    /* TON copy block */
+    .ton-block { margin-top: 10px; }
+    .ton-label-row { font-size: 11px; color: #557755; margin-bottom: 4px; }
+    .ton-copy-row {
+      display: inline-flex;
+      align-items: stretch;
+      border: 1px solid #1e4a1e;
+      background: #0a1a0a;
+      max-width: 100%;
+    }
+    .ton-addr-box {
+      font-size: 11px;
+      color: #aaffaa;
+      padding: 5px 10px;
+      letter-spacing: 0.03em;
+      word-break: break-all;
+      user-select: all;
+    }
+    .ton-copy-btn {
+      background: transparent;
+      border: none;
+      border-left: 1px solid #1e4a1e;
+      color: #557755;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 5px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .ton-copy-btn:hover { background: #0d2a0d; color: #33ff33; }
+    .ton-copy-btn.copied { color: #00ffaa; background: #0d2a0d; }
+
+    /* Project filter buttons */
+    .proj-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid #1e4a1e;
+      color: #557755;
+      font-family: inherit;
+      font-size: 10px;
+      padding: 2px 9px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn::before { content: '['; color: #1e3a1e; }
+    .filter-btn::after  { content: ']'; color: #1e3a1e; }
+    .filter-btn:hover { border-color: #33ff33; color: #aaffaa; }
+    .filter-btn.active { border-color: #33ff33; color: #00ffaa; background: #0d2a0d; }
+    .filter-btn.active::before,
+    .filter-btn.active::after { color: #336633; }
+
+    .project-item { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #0d2a0d; }
+    .project-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .proj-title { color: #fff; font-size: 12px; }
+    .proj-link { color: #00ffaa; font-size: 11px; text-decoration: none; border-bottom: 1px solid #1e6a1e; transition: color 0.15s, border-color 0.15s; }
+    .proj-link:hover { color: #33ff33; border-color: #33ff33; }
+    .proj-meta { color: #557755; font-size: 11px; margin-top: 2px; }
+    .proj-client-line { font-size: 10px; color: #336633; margin-top: 2px; }
+    .proj-tags { margin-top: 3px; }
+    .proj-tag { display: inline-block; border: 1px solid #1e4a1e; color: #556655; font-size: 10px; padding: 1px 6px; margin-right: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="term-root">
+  <div class="term-bar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <span class="term-title">skeleton@portfolio:~ — bash</span>
+  </div>
+
+  <div class="term-body">
+    <div class="skull-col">
+      <div class="skull-pre" id="skullPre"></div>
+    </div>
+
+    <div class="main-col">
+      <div class="prompt-line">
+        <span class="prompt">guest@portfolio:~$</span>
+        <span class="cmd">cat whoami.txt</span>
+      </div>
+      <div class="output">
+        <div class="out-line bright">&gt; Артем</div>
+        <div class="out-line dim">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</div>
+        <div class="out-line">Программирую на Python | Если есть вопросы пишите в телеграмм</div>
+        <div class="out-line dim">born: xx.xx.xxxx | status: employed &amp; freelancing</div>
+      </div>
+
+      <div class="divider">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</div>
+
+      <div class="prompt-line">
+        <span class="prompt">guest@portfolio:~$</span>
+        <span class="cmd" id="active-cmd">./run --section about</span>
+      </div>
+      <div class="nav-section">
+        <button class="nav-btn active" onclick="show('about',this)">about</button>
+        <button class="nav-btn" onclick="show('skills',this)">skills</button>
+        <button class="nav-btn" onclick="show('projects',this)">projects</button>
+        <button class="nav-btn" onclick="show('contact',this)">contact</button>
+      </div>
+
+      <div class="sections-container">
+
+        <!-- ABOUT -->
+        <div class="section visible" id="section-about">
+          <div class="out-line bright">&gt; Про меня</div>
+          <div class="out-line">Меня зовут Артем, Мое хобби - программирование и я с радостью для вас сделаю практически любой законный проект.</div>
+          <div style="margin-top:8px;">
+            <span class="tag">open source</span>
+            <span class="tag">remote ok</span>
+            <span class="tag">freelance</span>
+          </div>
+          <div class="ton-block">
+            <div class="ton-label-row">&gt; Поддержать:</div>
+            <div class="ton-copy-row">
+              <span class="ton-addr-box" id="tonAddr">UQCcal5WbcnbOM5jj0rIzb9tqmC7qrXGk5A29Eur140AludN</span>
+              <button class="ton-copy-btn" id="tonCopyBtn" onclick="copyTon()">copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SKILLS -->
+        <div class="section" id="section-skills">
+          <div class="out-line bright">&gt; Навыки</div>
+          <div style="margin-top:8px;">
+            <div class="skill-bar-row"><span class="skill-name">Telegram Bot</span><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div><span class="skill-pct">80%</span></div>
+            <div class="skill-bar-row"><span class="skill-name">Telegram User Bot</span><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div><span class="skill-pct">65%</span></div>
+            <div class="skill-bar-row"><span class="skill-name">Telegram Mini App</span><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div><span class="skill-pct">50%</span></div>
+          </div>
+        </div>
+
+        <!-- PROJECTS -->
+        <div class="section" id="section-projects">
+          <div class="proj-filter-row">
+            <button class="filter-btn active" onclick="filterProjects('all',this)">All</button>
+            <button class="filter-btn" onclick="filterProjects('smishek',this)">Smishek</button>
+            <button class="filter-btn" onclick="filterProjects('scronexcy',this)">scronexcy</button>
+            <button class="filter-btn" onclick="filterProjects('own',this)">My</button>
+          </div>
+          <div id="projList">
+
+            <div class="project-item" data-client="smishek">
+              <div><span style="color:#00ffaa">&#9656;</span> <span class="proj-title">TopNet</span> &nbsp;<a class="proj-link" href="https://t.me/T0pNetbot?start=_tgr_PPr7ulQzODky" target="_blank">Telegram &#8599;</a></div>
+              <div class="proj-meta">Телеграмм бот для покупки VPN.</div>
+              <div class="proj-client-line">Дата выпуска: 09.03.2026 <br>Заказчик: <a class="proj-link" href="https://t.me/Smishek" target="_blank">smishek &#8599;</a></div>
+              <div class="proj-tags"><span class="proj-tag">Python</span></div>
+            </div>
+
+            <div class="project-item" data-client="smishek">
+              <div><span style="color:#00ffaa">&#9656;</span> <span class="proj-title">Support - Smishek</span> &nbsp;<a class="proj-link" href="https://t.me/Supp0rt_R0bot" target="_blank">Telegram &#8599;</a></div>
+              <div class="proj-meta">Телеграмм бот поддержки для канала смишек.</div>
+              <div class="proj-client-line">Дата выпуска: 17.03.2026 <br>Заказчик: <a class="proj-link" href="https://t.me/Smishek" target="_blank">smishek &#8599;</a></div>
+              <div class="proj-tags"><span class="proj-tag">Python</span></div>
+            </div>
+
+            <div class="project-item" data-client="scronexcy">
+              <div><span style="color:#00ffaa">&#9656;</span> <span class="proj-title">Купить звезды</span> &nbsp;<a class="proj-link" href="https://t.me/sellstarscronn_bot" target="_blank">Telegram &#8599;</a></div>
+              <div class="proj-meta">Телеграмм бот для покупки телеграмм звезд и ТОН.</div>
+              <div class="proj-client-line">Дата выпуска: 20.03.2026 <br>Заказчик: <a class="proj-link" href="https://t.me/Scronexcyyy" target="_blank">🕊️スクロネックス🕊️ &#8599;</a></div>
+              <div class="proj-tags"><span class="proj-tag">Python</span></div>
+            </div>
+
+            <div class="project-item" data-client="smishek">
+              <div><span style="color:#00ffaa">&#9656;</span> <span class="proj-title">Crocodile</span> &nbsp;<a class="proj-link" href="https://t.me/Crocodi1ebot" target="_blank">Telegram &#8599;</a></div>
+              <div class="proj-meta">Телеграмм бот с мини игрой Крокодил.</div>
+              <div class="proj-client-line">Дата выпуска: 26.03.2026 <br>Заказчик: <a class="proj-link" href="https://t.me/Smishek" target="_blank">smishek &#8599;</a></div>
+              <div class="proj-tags"><span class="proj-tag">Python</span></div>
+            </div>
+
+            <div class="project-item" data-client="smishek">
+              <div><span style="color:#00ffaa">&#9656;</span> <span class="proj-title">TopLuck</span> &nbsp;<a class="proj-link" href="https://t.me/TopLuck_bot?start=_tgr_j8aEOeNlZTJi" target="_blank">Telegram &#8599;</a></div>
+              <div class="proj-meta">Телеграмм бот азартными мини-играми.</div>
+              <div class="proj-client-line">Дата выпуска: 03.04.2026 <br>Заказчик: <a class="proj-link" href="https://t.me/Smishek" target="_blank">smishek &#8599;</a></div>
+              <div class="proj-tags"><span class="proj-tag">Python</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="section" id="section-contact">
+          <div class="out-line bright">&gt; Контакты</div>
+          <div style="margin-top:8px;">
+            <div class="out-line"><span style="color:#557755">Telegram </span> <a class="proj-link" href="https://t.me/ArtemKirss" target="_blank">@ArtemKirss &#8599;</a></div>
+            <div class="out-line warn" style="margin-top:10px;">Примерное время ответа: &lt; 24h</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="uptime-line">
+        uptime: <span id="uptime">00:00:00</span> &nbsp;|&nbsp; mem: <span id="mem">128</span>kb &nbsp;|&nbsp; <span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var TON_ADDRESS = 'UQCcal5WbcnbOM5jj0rIzb9tqmC7qrXGk5A29Eur140AludN';
+  document.getElementById('tonAddr').textContent = TON_ADDRESS;
+
+  function copyTon() {
+    navigator.clipboard.writeText(TON_ADDRESS).then(function() {
+      var btn = document.getElementById('tonCopyBtn');
+      btn.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function filterProjects(client, btn) {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.project-item').forEach(function(item) {
+      item.style.display = (client === 'all' || item.dataset.client === client) ? '' : 'none';
+    });
+  }
+
+  function show(name, btn) {
+    document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('visible'); });
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('section-' + name).classList.add('visible');
+    btn.classList.add('active');
+    document.getElementById('active-cmd').textContent = './run --section ' + name;
+  }
+
+  var t = 0;
+  setInterval(function() {
+    t++;
+    var h = String(Math.floor(t / 3600)).padStart(2, '0');
+    var m = String(Math.floor(t % 3600 / 60)).padStart(2, '0');
+    var s = String(t % 60).padStart(2, '0');
+    document.getElementById('uptime').textContent = h + ':' + m + ':' + s;
+    document.getElementById('mem').textContent = String(128 + Math.floor(Math.sin(t * 0.1) * 12));
+  }, 1000);
+
+  var skullLines = [
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28C0\u28C0\u28C0\u28C0\u28C0\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28E0\u28F4\u2836\u281B\u281B\u2809\u28C9\u28C9\u28C9\u2809\u281B\u281B\u2836\u28E6\u28C4\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2880\u28F4\u281F\u2809\u28E0\u28F4\u2836\u281B\u280B\u2809\u2809\u2809\u2819\u281B\u2836\u28E6\u28C4\u2809\u283B\u28E6\u2840\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u28F0\u281F\u2801\u2880\u28FC\u286B\u2812\u2800\u2800\u2880\u28C0\u28E4\u28C0\u2840\u2800\u2800\u2812\u289D\u28E7\u2840\u2808\u283B\u28C6\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28F4\u280F\u2800\u2880\u28FE\u280F\u2880\u28E0\u28F4\u283F\u281B\u2809\u2809\u2809\u281B\u283F\u28E6\u28C4\u2840\u2839\u28F7\u2840\u2800\u2839\u28E6\u2800\u2800',
+  '\u2800\u2800\u28E0\u28FF\u2800\u2880\u287E\u28E1\u28F4\u281F\u2809\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2809\u283B\u28E6\u28CC\u28BF\u2840\u2800\u2838\u2847\u2800\u2800\u2800',
+  '\u2800\u2800\u2876\u281B\u2800\u28FC\u287F\u280B\u2800\u2800\u2880\u28C0\u28E4\u28F4\u28F6\u28FF\u28F6\u28E6\u28E4\u28C0\u2840\u2800\u2800\u2819\u28BF\u28E7\u2800\u2818\u28B6\u2800\u2800',
+  '\u2800\u28C0\u28B0\u28FF\u2880\u285F\u2800\u2800\u2800\u28F0\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28C6\u2800\u2800\u2800\u28BB\u2840\u28FF\u2846\u28C0\u2800',
+  '\u28FE\u28FF\u28B8\u28FF\u28B8\u2847\u2800\u2800\u2800\u2809\u2819\u283B\u283F\u28FF\u28BF\u28FF\u287F\u28FF\u283F\u281F\u280B\u2809\u2800\u2800\u2800\u28B8\u2847\u28FF\u2847\u28FF\u28F7',
+  '\u28FF\u285F\u28B8\u2847\u28B8\u2847\u2800\u2800\u28E4\u2800\u2800\u28C0\u2800\u2800\u28B8\u28FF\u2847\u2800\u2800\u28C0\u2800\u2800\u28E4\u2800\u2800\u28B8\u2847\u28B8\u2847\u28BB\u28FF\u2800',
+  '\u28B8\u2803\u28B8\u2800\u28FE\u2800\u2800\u2800\u28FF\u28C6\u2800\u2809\u2800\u28E0\u28FE\u283F\u28F7\u28C4\u2800\u2809\u2800\u28F0\u28FF\u2800\u2800\u2800\u28F7\u2800\u2847\u2818\u2847\u2800',
+  '\u2800\u2800\u2808\u2800\u28FF\u2800\u2800\u2800\u2818\u28BF\u28FF\u287F\u28FF\u28FF\u284F\u2800\u28B9\u28FF\u28FF\u28BF\u28FF\u287F\u2803\u2800\u2800\u2800\u28FF\u2800\u2801\u2800\u2800\u2800',
+  '\u2800\u28A0\u2844\u2880\u287F\u2800\u2800\u2800\u2800\u2800\u2800\u2808\u28BF\u28FF\u28E4\u28FF\u28E4\u28FF\u287F\u2801\u2800\u2800\u2800\u2800\u2800\u2800\u28BF\u2840\u28A0\u2844\u2800\u2800',
+  '\u2800\u2800\u2801\u28B8\u28C7\u2800\u2800\u2800\u2800\u2800\u28A7\u2800\u281E\u28FF\u28BB\u28FF\u285F\u28FF\u2833\u2800\u287C\u2800\u2800\u2800\u2800\u2800\u28F8\u2847\u2808\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2819\u28B7\u28C4\u2800\u2800\u2800\u2808\u283B\u28C6\u28F6\u28E8\u28E4\u28C5\u28F6\u28F0\u281F\u2801\u2800\u2800\u2800\u28E0\u287E\u280B\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u28B9\u2877\u28E6\u2840\u2800\u2800\u2818\u28FF\u28FF\u28FF\u28FF\u28FF\u2803\u2800\u2800\u2880\u28F4\u28BE\u284F\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u28F8\u2847\u2808\u283B\u28E6\u2840\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2880\u28F4\u281F\u2801\u28B8\u28C7\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2808\u2801\u2800\u2800\u2808\u283B\u28E6\u2840\u2800\u2800\u2800\u2880\u28F4\u281F\u2801\u2800\u2800\u2808\u2801\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2808\u2819\u28B6\u28E4\u2876\u280B\u2801\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2809\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '',
+  '\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D\u003D',
+  '',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28E4\u28F6\u28F6\u28FF\u28FF\u28FF\u28FF\u28FF\u28F7\u28F6\u28C4\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28B8\u28FF\u2801\u2808\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2846\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28B8\u28FF\u28F6\u28F6\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u28C0\u28C0\u28C0\u28C0\u28C8\u28C9\u28C9\u28C9\u28C9\u28C9\u28F9\u28FF\u28FF\u28FF\u28FF\u28FF\u2847\u28A0\u28E4\u28E4\u28C4\u2840\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28A0\u28FE\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2847\u28B8\u28FF\u28FF\u28FF\u28F7\u2844\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28FE\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2807\u28FC\u28FF\u28FF\u28FF\u28FF\u28E7\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u283F\u283F\u283F\u283F\u283F\u283F\u283F\u283F\u281F\u288B\u28F4\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u280F\u28E1\u28F6\u28F6\u28F6\u28F6\u28F6\u28F6\u28F6\u28F6\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u28BB\u28FF\u28FF\u28FF\u28FF\u284F\u28B8\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u285F\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2808\u28BF\u28FF\u28FF\u28FF\u2847\u28B8\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u287F\u2801\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2809\u2809\u2809\u2801\u28B8\u28FF\u28FF\u28FF\u28FF\u28FF\u28CF\u28C9\u28C9\u28C9\u28C9\u28C9\u2849\u2809\u2809\u2809\u2809\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28B8\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u283F\u283F\u28FF\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2838\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u28FF\u2840\u2880\u28FF\u2807\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  '\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2808\u281B\u283F\u28BF\u28FF\u28FF\u28FF\u287F\u283F\u281B\u2801\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800',
+  ];
+
+  var EMPTY = '\u2800';
+  var container = document.getElementById('skullPre');
+  skullLines.forEach(function(line) {
+    var rowEl = document.createElement('div');
+    rowEl.className = 'skull-row';
+    Array.from(line).forEach(function(ch) {
+      var sp = document.createElement('span');
+      sp.textContent = (ch === EMPTY) ? '\u00A0' : ch;
+      rowEl.appendChild(sp);
+    });
+    container.appendChild(rowEl);
+  });
+</script>
+
+</body>
+</html>

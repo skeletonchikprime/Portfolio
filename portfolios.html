@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Артем — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --bg:        #0a0a0f;
+        --surface:   #111118;
+        --surface2:  #18181f;
+        --border:    #ffffff0f;
+        --border2:   #ffffff18;
+        --text:      #e8e8f0;
+        --muted:     #6b6b80;
+        --accent:    #7fffb2;
+        --accent2:   #4af0ff;
+        --accent3:   #ff6b9d;
+        --tag-bg:    #7fffb215;
+        --tag-text:  #7fffb2;
+        --radius:    12px;
+        --radius-sm: 6px;
+        --mono: 'DM Mono', monospace;
+        --sans: 'DM Sans', sans-serif;
+        --display: 'Syne', sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      a { color: inherit; text-decoration: none; }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.12;
+        pointer-events: none;
+        z-index: 0;
+        max-width: 100vw;
+      }
+      .blob-1 { width: 600px; height: 600px; background: var(--accent);  top: -200px; right: -100px; }
+      .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 200px; left: -150px; }
+      .blob-3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; right: 200px; }
+
+      .wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+        width: 100%;
+      }
+
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #0a0a0fcc;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        width: 100%;
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+        height: 58px;
+      }
+      .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: 0.05em; }
+      .nav-logo span { color: var(--muted); }
+      .nav-links { display: flex; gap: 28px; }
+      .nav-links a { font-family: var(--mono); font-size: 13px; color: var(--muted); transition: color 0.2s; letter-spacing: 0.03em; }
+      .nav-links a:hover { color: var(--text); }
+
+      .hero { padding: 100px 0 80px; animation: fadeUp 0.8s ease both; }
+      .hero-label {
+        font-family: var(--mono); font-size: 12px; color: var(--accent);
+        letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 20px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .hero-label::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+      .hero h1 {
+        font-family: var(--display);
+        font-size: clamp(48px, 8vw, 88px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin-bottom: 8px;
+        word-break: break-word;
+      }
+      .hero h1 .accent-line {
+        display: block;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-role { font-family: var(--mono); font-size: 15px; color: var(--muted); margin-top: 20px; margin-bottom: 32px; }
+      .hero-role strong { color: var(--text); font-weight: 400; }
+      .hero-desc { font-size: 17px; color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 40px; }
+      .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 11px 22px; border-radius: var(--radius-sm);
+        font-family: var(--mono); font-size: 13px; font-weight: 500;
+        letter-spacing: 0.03em; transition: all 0.2s; cursor: pointer; border: none;
+      }
+      .btn-primary { background: var(--accent); color: var(--bg); }
+      .btn-primary:hover { background: #9fffc5; transform: translateY(-1px); }
+      .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+      .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+      section { padding: 80px 0; }
+      .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+      .section-num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.1em; }
+      .section-title { font-family: var(--display); font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+      .section-line { flex: 1; height: 1px; background: var(--border2); min-width: 0; }
+
+      /* ── ABOUT ── */
+      .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+      @media (max-width: 640px) { .about-grid { grid-template-columns: 1fr; } }
+      .about-text p { color: var(--muted); line-height: 1.8; margin-bottom: 16px; font-size: 15px; }
+      .about-text p:last-child { margin-bottom: 0; }
+      .about-text strong { color: var(--text); font-weight: 500; }
+      .skills-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+      .skills-box h3 { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+      .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+      .tag {
+        font-family: var(--mono); font-size: 12px;
+        background: var(--tag-bg); color: var(--tag-text);
+        border: 1px solid #7fffb230; padding: 4px 10px; border-radius: 4px; letter-spacing: 0.03em;
+      }
+      .tag.blue { background: #4af0ff15; color: var(--accent2); border-color: #4af0ff30; }
+      .tag.pink  { background: #ff6b9d15; color: var(--accent3); border-color: #ff6b9d30; }
+
+      .projects-grid { display: flex; flex-direction: column; gap: 20px; }
+
+      .project-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px 32px;
+        transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+        position: relative;
+        animation: fadeUp 0.6s ease both;
+      }
+      .project-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 3px; height: 100%;
+        background: linear-gradient(180deg, var(--accent), var(--accent2));
+        border-radius: var(--radius) 0 0 var(--radius);
+        opacity: 0;
+        transition: opacity 0.25s;
+        pointer-events: none;
+      }
+      .project-card:hover { border-color: var(--border2); transform: translateX(4px); box-shadow: 0 8px 40px #0006; }
+      .project-card:hover::after { opacity: 1; }
+
+      .project-top {
+        display: flex; align-items: flex-start;
+        justify-content: space-between; gap: 16px;
+        margin-bottom: 10px; flex-wrap: wrap;
+      }
+      .project-title { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+      .project-date {
+        font-family: var(--mono); font-size: 12px; color: var(--muted);
+        padding: 4px 10px; border: 1px solid var(--border);
+        border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+      }
+      .project-desc { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 14px; }
+
+      .project-meta { display: flex; flex-direction: column; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+      .project-client {
+        font-family: var(--mono); font-size: 12px; color: var(--muted);
+        display: flex; align-items: center; gap: 5px;
+      }
+      .project-client svg { width: 12px; height: 12px; opacity: 0.6; flex-shrink: 0; }
+      .project-client a { color: var(--accent2); transition: color 0.2s; border-bottom: 1px dashed #4af0ff40; }
+      .project-client a:hover { color: #8af6ff; }
+
+      .project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+      .project-tech .tag { font-size: 11px; }
+
+      .project-links { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+      .project-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: var(--mono); font-size: 12px; color: var(--muted);
+        transition: color 0.2s; letter-spacing: 0.03em;
+      }
+      .project-link:hover { color: var(--accent); }
+      .project-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+      .project-link.primary { color: var(--accent); }
+      .project-link.primary:hover { color: #9fffc5; }
+
+      .gh-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-family: var(--mono); font-size: 11px;
+        padding: 3px 9px; border-radius: 4px;
+        letter-spacing: 0.03em; cursor: default;
+      }
+      .gh-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+      .gh-badge.gh-public {
+        background: #7fffb210; color: var(--accent); border: 1px solid #7fffb230;
+        cursor: pointer; transition: background 0.2s;
+      }
+      .gh-badge.gh-public:hover { background: #7fffb225; }
+      .gh-badge.gh-private { background: #ffb86c15; color: #ffb86c; border: 1px solid #ffb86c30; }
+      .gh-badge.gh-none    { background: #ffffff08; color: var(--muted); border: 1px solid var(--border); }
+
+      .contacts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+      .contact-card {
+        display: flex; align-items: center; gap: 14px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 18px 20px;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+      .contact-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+      .contact-icon {
+        width: 36px; height: 36px; background: var(--surface2);
+        border-radius: 8px; display: flex; align-items: center;
+        justify-content: center; flex-shrink: 0; color: var(--accent);
+      }
+      .contact-icon svg { width: 18px; height: 18px; }
+      .contact-info { min-width: 0; }
+      .contact-label { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+      .contact-value { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+      footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; }
+      footer p { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
+      footer span { color: var(--accent); }
+
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .project-card:nth-child(1) { animation-delay: 0.0s; }
+      .project-card:nth-child(2) { animation-delay: 0.1s; }
+      .project-card:nth-child(3) { animation-delay: 0.2s; }
+      .project-card:nth-child(4) { animation-delay: 0.3s; }
+      .project-card:nth-child(5) { animation-delay: 0.4s; }
+
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+      @media (max-width: 480px) {
+        .nav-links { gap: 16px; }
+        .project-card { padding: 20px 18px; }
+        .hero h1 { font-size: clamp(36px, 11vw, 72px); }
+      }
+
+      .project-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid;
+      }
+
+      .project-status::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+
+      .status-online {
+        color: #7fffb2;
+        background: #7fffb210;
+        border-color: #7fffb230;
+      }
+
+      .status-online::before {
+        background: #7fffb2;
+        box-shadow: 0 0 8px #7fffb2;
+      }
+
+      .status-offline {
+        color: #ff6b6b;
+        background: #ff6b6b10;
+        border-color: #ff6b6b30;
+      }
+
+      .status-offline::before {
+        background: #ff6b6b;
+        box-shadow: 0 0 8px #ff6b6b;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <nav>
+      <div class="nav-inner">
+        <div class="nav-logo"><span>~/</span>artem</div>
+        <div class="nav-links">
+          <a href="#about">about</a>
+          <a href="#projects">projects</a>
+          <a href="#contact">contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="wrapper">
+      <div class="hero">
+        <div class="hero-label">Доступен для работы</div>
+        <h1>
+          Артем
+          <span class="accent-line">Developer.</span>
+        </h1>
+        <p class="hero-role">
+          <strong>Full-Stack Engineer</strong> &nbsp;·&nbsp; Располагаюсь там где я сейчас нахожусь
+        </p>
+        <p class="hero-desc">
+          Специализируюсь на телеграм ботах, но могу делать и сайты, мини-апп, различные приложения.
+        </p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            Проекты
+          </a>
+          <a href="#contact" class="btn btn-outline">
+            Контакты →
+          </a>
+        </div>
+      </div>
+
+      <section id="about">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Обо мне</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>Привет, я <strong>Артем</strong> — разработчик, специализирующийся на создании красивых и функциональных цифровых продуктов.</p>
+            <p>Я работаю с кодом уже <strong>6 лет</strong>, создавая всё — от небольших инструментов до масштабных приложений. Мне нравится, когда мои работы помогают мне или другим людям.</p>
+            <p>Когда я не занимаюсь программированием, я, вероятно, <strong>учусь или изучаю новые технологии</strong>, читаю или работаю над каким-нибудь побочным проектом, который никто не заказывал, но который я просто не мог не сделать.</p>
+          </div>
+          <div>
+            <div class="skills-box">
+              <h3>// tech stack</h3>
+              <div class="tags" style="margin-bottom:16px;">
+                <span class="tag">Python</span>
+                <span class="tag">JavaScript</span>
+              </div>
+              <h3>// tools & infra</h3>
+              <div class="tags" style="margin-bottom:16px;">
+                <span class="tag blue">PyCharm</span>
+                <span class="tag blue">Git</span>
+                <span class="tag blue">Docker</span>
+              </div>
+              <h3>// learning</h3>
+              <div class="tags">
+                <span class="tag pink">Python</span>
+                <span class="tag pink">JavaScript</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Проекты</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="projects-grid" id="projects-container"></div>
+      </section>
+
+      <section id="contact">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Контакты</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="contacts-grid">
+
+          <a href="https://github.com/skeletonchikprime" target="_blank" class="contact-card">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            </div>
+            <div class="contact-info">
+              <div class="contact-label">GitHub</div>
+              <div class="contact-value">skeletonchikprime</div>
+            </div>
+          </a>
+
+          <a href="https://t.me/ArtemDevelloper" target="_blank" class="contact-card">
+            <div class="contact-icon" style="color:var(--accent3)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+            <div class="contact-info">
+              <div class="contact-label">Telegram</div>
+              <div class="contact-value">@ArtemDevelloper</div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>Сделано <span>Артемом</span> &nbsp;·&nbsp; <span>2026</span></p>
+    </footer>
+
+    <script>
+      const projects = [
+        {
+          title: "TopNet",
+          date: "09.03.2026",
+          desc: "Телеграм-бот с премиум эмодзи, разноцветными кнопками, предназначен для покупки VPN за телеграм-звёзды.",
+          status: "online",
+          client: { name: "smishek", link: "https://t.me/Smishek" },
+          tech: ["Python", "Xray"],
+          live_url: "https://t.me/T0pNetbot?start=_tgr_PPr7ulQzODky",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "Support — Smishek",
+          date: "17.03.2026",
+          desc: "Телеграм-бот поддержки команды <a href=\'https://t.me/Smishek'>@Smishek </a>. Модерация идёт в группе с включёнными topic(ветками). Поддерживаются все типы сообщений, изменение, ответы и реакции (только стандартные).",
+          status: "online",
+          client: { name: "smishek", link: "https://t.me/Smishek" },
+          tech: ["Python"],
+          live_url: "https://t.me/Supp0rt_R0bot",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "Купить звёзды | scronexcy",
+          date: "20.03.2026",
+          desc: "Телеграм-бот для покупки телеграм-звёзд и TON. Телеграм-звезды и TON владелец бота отправляет сам.",
+          status: "offline",
+          client: { name: "🕊️ Scronexcyyy 🕊️", link: "https://t.me/Scronexcyyy" },
+          tech: ["Python"],
+          live_url: "https://t.me/sellstarscronn_bot",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "Crocodile",
+          date: "26.03.2026",
+          desc: "Телеграм-бот с мини-игрой «Крокодил».",
+          status: "online",
+          client: { name: "smishek", link: "https://t.me/Smishek" },
+          tech: ["Python"],
+          live_url: "https://t.me/Crocodi1ebot",
+          github_status: "none",
+          github_url: null
+        }
+      ];
+
+      const ICON_LINK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+      const ICON_GH   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>`;
+      const ICON_LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`;
+      const ICON_USER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+      const ICON_STATUS = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>`;
+
+      function ghBadge(status, url) {
+        if (status === "public" && url) {
+          return `<a href="${url}" target="_blank" class="gh-badge gh-public">${ICON_GH} GitHub · открытый</a>`;
+        } else if (status === "private") {
+          return `<span class="gh-badge gh-private">${ICON_LOCK} GitHub · приватный</span>`;
+        } else {
+          return `<span class="gh-badge gh-none">${ICON_GH} GitHub · нет</span>`;
+        }
+      }
+
+      const container = document.getElementById("projects-container");
+
+      projects.forEach((p, i) => {
+        const clientHTML = p.client.link
+          ? `<a href="${p.client.link}" target="_blank">${p.client.name}</a>`
+          : `<span style="color:var(--text)">${p.client.name}</span>`;
+
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.style.animationDelay = `${i * 0.1}s`;
+
+        card.innerHTML = `
+          <div class="project-top">
+            <h3 class="project-title">${p.title}</h3>
+            <span class="project-date">${p.date}</span>
+          </div>
+
+          <p class="project-desc">${p.desc}</p>
+
+          <div class="project-meta">
+            <div class="project-client">
+              ${ICON_USER}
+              <span>Заказчик:&nbsp;</span>${clientHTML}
+            </div>
+
+            <div class="project-client">
+              ${ICON_STATUS}
+              <span>Статус:&nbsp;</span>
+              <div class="project-status ${p.status === 'online' ? 'status-online' : 'status-offline'}">
+                ${p.status === 'online' ? 'Работает' : 'Не работает'}
+              </div>
+            </div>
+          </div>
+
+          <div class="project-tech">
+            ${p.tech.map(t => `<span class="tag">${t}</span>`).join("")}
+          </div>
+
+          <div class="project-links">
+            ${p.live_url
+              ? `<a href="${p.live_url}" target="_blank" class="project-link primary">${ICON_LINK} Перейти</a>`
+              : ""}
+            ${ghBadge(p.github_status, p.github_url)}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    </script>
+  </body>
+</html>
