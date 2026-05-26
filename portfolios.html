@@ -409,6 +409,15 @@
         <div class="projects-grid" id="projects-container"></div>
       </section>
 
+      <section id="mini-projects" style="padding-top: 40px;">
+        <div class="section-header">
+          <span class="section-num">02.1</span>
+          <h2 class="section-title">Мини-проекты</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="projects-grid" id="mini-projects-container"></div>
+      </section>
+
       <section id="contact">
         <div class="section-header">
           <span class="section-num">03</span>
@@ -493,6 +502,53 @@
         }
       ];
 
+      const miniProjects = [
+        {
+          title: "ArtemSupportsBot",
+          date: "31.12.2023",
+          desc: "Телеграм бот поддержки https://t.me/ArtemDevelloper",
+          status: "online",
+          client: { name: "Artem", link: "https://t.me/ArtemDevelloper" },
+          tech: ["Python"],
+          live_url: "https://t.me/ArtemSupportsBot",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "ArtemDownloadMediasBot",
+          date: "10.10.2025",
+          desc: "Телеграм бот для скачивания медиа из социальных сетей",
+          status: "online",
+          client: { name: "Artem", link: "https://t.me/ArtemDevelloper" },
+          tech: ["Python"],
+          live_url: "https://t.me/ArtemDownloadMediasBot",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "ArtemMemesBot",
+          date: "30.04.2026",
+          desc: "Телеграм бот демотиватор",
+          status: "online",
+          client: { name: "Artem", link: "https://t.me/ArtemDevelloper" },
+          tech: ["Python"],
+          live_url: "https://t.me/ArtemMemesBot",
+          github_status: "none",
+          github_url: null
+        },
+        {
+          title: "ArtemGeometrizesBot",
+          date: "22.04.2026",
+          desc: "Телеграм бот геометризатор(рисует изображения используя геометрические фигуры)",
+          status: "online",
+          client: { name: "Artem", link: "https://t.me/ArtemDevelloper" },
+          tech: ["Python"],
+          live_url: "https://t.me/ArtemGeometrizesBot",
+          github_status: "none",
+          github_url: null
+        }
+      ];
+
       const ICON_LINK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
       const ICON_GH   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>`;
       const ICON_LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`;
@@ -509,54 +565,61 @@
         }
       }
 
-      const container = document.getElementById("projects-container");
+      // Функция для генерации карточек (чтобы не дублировать код)
+      function renderProjectsList(projectsArray, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
 
-      projects.forEach((p, i) => {
-        const clientHTML = p.client.link
-          ? `<a href="${p.client.link}" target="_blank">${p.client.name}</a>`
-          : `<span style="color:var(--text)">${p.client.name}</span>`;
+        projectsArray.forEach((p, i) => {
+          const clientHTML = p.client.link
+            ? `<a href="${p.client.link}" target="_blank">${p.client.name}</a>`
+            : `<span style="color:var(--text)">${p.client.name}</span>`;
 
-        const card = document.createElement("div");
-        card.className = "project-card";
-        card.style.animationDelay = `${i * 0.1}s`;
+          const card = document.createElement("div");
+          card.className = "project-card";
+          card.style.animationDelay = `${i * 0.1}s`;
 
-        card.innerHTML = `
-          <div class="project-top">
-            <h3 class="project-title">${p.title}</h3>
-            <span class="project-date">${p.date}</span>
-          </div>
-
-          <p class="project-desc">${p.desc}</p>
-
-          <div class="project-meta">
-            <div class="project-client">
-              ${ICON_USER}
-              <span>Заказчик:&nbsp;</span>${clientHTML}
+          card.innerHTML = `
+            <div class="project-top">
+              <h3 class="project-title">${p.title}</h3>
+              <span class="project-date">${p.date}</span>
             </div>
 
-            <div class="project-client">
-              ${ICON_STATUS}
-              <span>Статус:&nbsp;</span>
-              <div class="project-status ${p.status === 'online' ? 'status-online' : 'status-offline'}">
-                ${p.status === 'online' ? 'Работает' : 'Не работает'}
+            <p class="project-desc">${p.desc}</p>
+
+            <div class="project-meta">
+              <div class="project-client">
+                ${ICON_USER}
+                <span>Заказчик:&nbsp;</span>${clientHTML}
+              </div>
+
+              <div class="project-client">
+                ${ICON_STATUS}
+                <span>Статус:&nbsp;</span>
+                <div class="project-status ${p.status === 'online' ? 'status-online' : 'status-offline'}">
+                  ${p.status === 'online' ? 'Работает' : 'Не работает'}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="project-tech">
-            ${p.tech.map(t => `<span class="tag">${t}</span>`).join("")}
-          </div>
+            <div class="project-tech">
+              ${p.tech.map(t => `<span class="tag">${t}</span>`).join("")}
+            </div>
 
-          <div class="project-links">
-            ${p.live_url
-              ? `<a href="${p.live_url}" target="_blank" class="project-link primary">${ICON_LINK} Перейти</a>`
-              : ""}
-            ${ghBadge(p.github_status, p.github_url)}
-          </div>
-        `;
+            <div class="project-links">
+              ${p.live_url
+                ? `<a href="${p.live_url}" target="_blank" class="project-link primary">${ICON_LINK} Перейти</a>`
+                : ""}
+              ${ghBadge(p.github_status, p.github_url)}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
 
-        container.appendChild(card);
-      });
+      // Вызываем функцию для обоих контейнеров
+      renderProjectsList(projects, "projects-container");
+      renderProjectsList(miniProjects, "mini-projects-container");
     </script>
   </body>
 </html>
