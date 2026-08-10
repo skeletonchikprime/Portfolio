@@ -1,0 +1,70 @@
+[
+  {
+    "title": "block_nft_gift_transfer.plugin",
+    "date": "04.08.2026",
+    "desc": "Плагин блокирующий кнопки передачи и продажи NFT, также позволяет автоматически выставить цену в 99 999 звезд",
+    "status": "release",
+    "client": {
+      "name": "@withouss",
+      "link": "https://t.me/withouss"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/ArtemsPlugin/7",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Безопасность"
+  },
+  {
+    "title": "animated_text.plugin",
+    "date": "06.08.2026",
+    "desc": "Плагин позволяющий сделать покадровые анимации и анимацию печатанья, есть редактор кадровд",
+    "status": "release",
+    "client": {
+      "name": "@ArtemDevelloper",
+      "link": "https://t.me/ArtemDevelloper"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/ArtemsPlugin/9",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Анимации"
+  },
+  {
+    "title": "account_hider.plugin",
+    "date": "08.08.2026",
+    "desc": "Плагин позволяет скрыть аккаунты из списка аккаунтов",
+    "status": "release",
+    "client": {
+      "name": "@ArtemDevelloper",
+      "link": "https://t.me/ArtemDevelloper"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/ArtemsPlugin/10",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Приватность"
+  },
+  {
+    "title": "dice_skip_animation.plugin",
+    "date": "09.08.2026",
+    "desc": "Пропускает анимацию для играющих эмодзи (🎰🎲🎯🎳🏀⚽️)",
+    "status": "beta",
+    "client": {
+      "name": "@ArtemDevelloper",
+      "link": "https://t.me/ArtemDevelloper"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/ArtemsPlugin/7",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Анимации"
+  }
+]

@@ -1,0 +1,71 @@
+[
+  {
+    "title": "TopNet",
+    "date": "09.03.2026",
+    "desc": "Телеграм-бот с премиум эмодзи, разноцветными кнопками, предназначен для покупки VPN за телеграм-звёзды.",
+    "status": "online",
+    "client": {
+      "name": "smishek",
+      "link": "https://t.me/Smishek"
+    },
+    "tech": [
+      "Python",
+      "Xray"
+    ],
+    "live_url": "https://t.me/T0pNetbot?start=_tgr_PPr7ulQzODky",
+    "github_status": "none",
+    "github_url": null,
+    "category": "VPN"
+  },
+  {
+    "title": "Support — Smishek",
+    "date": "17.03.2026",
+    "desc": "Телеграм-бот поддержки команды @Smishek. Модерация идёт в группе с включёнными topic(ветками). Поддерживаются все типы сообщений, изменение, ответы и реакции (только стандартные).",
+    "status": "online",
+    "client": {
+      "name": "smishek",
+      "link": "https://t.me/Smishek"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/Supp0rt_R0bot",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Поддержка"
+  },
+  {
+    "title": "Купить звёзды | scronexcy",
+    "date": "20.03.2026",
+    "desc": "Телеграм-бот для покупки телеграм-звёзд и TON. Телеграм-звезды и TON владелец бота отправляет сам.",
+    "status": "offline",
+    "client": {
+      "name": "🕊️ Scronexcyyy 🕊️",
+      "link": "https://t.me/Scronexcyyy"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/sellstarscronn_bot",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Магазин"
+  },
+  {
+    "title": "Crocodile",
+    "date": "26.03.2026",
+    "desc": "Телеграм-бот с мини-игрой «Крокодил».",
+    "status": "online",
+    "client": {
+      "name": "smishek",
+      "link": "https://t.me/Smishek"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/Crocodi1ebot",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Игры"
+  }
+]
