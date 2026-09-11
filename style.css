@@ -189,19 +189,6 @@ img{ max-width:100%; display:block; }
   border-radius: 999px;
   transition: color .3s var(--ease), transform .25s var(--ease);
 }
-.pill::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 14%;
-  width: 72%; height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
-  opacity: 0;
-  transform: translateY(-6px) scaleX(.4);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
-  pointer-events: none;
-}
-.pill:hover::before{ opacity: 1; transform: translateY(0) scaleX(1); }
 .pill:hover{ color: var(--text); transform: translateY(-2px); }
 .pill:active{ transform: translateY(0) scale(.93); }
 .pill.active{ color: #fff; }
@@ -212,14 +199,8 @@ img{ max-width:100%; display:block; }
   width: 0;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--purple), var(--purple-2));
-  box-shadow: 0 0 20px rgba(124,58,237,.5);
   transition: transform .45s var(--ease), width .45s var(--ease);
-  animation: glow-pulse 2.4s ease-in-out infinite;
   z-index: 1;
-}
-@keyframes glow-pulse{
-  0%,100%{ box-shadow: 0 0 20px rgba(124,58,237,.5); }
-  50%{ box-shadow: 0 0 30px rgba(124,58,237,.8); }
 }
 
 .burger{
@@ -439,19 +420,6 @@ img{ max-width:100%; display:block; }
   transition: left .6s var(--ease);
   pointer-events: none;
 }
-.btn::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 10%;
-  width: 80%; height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent);
-  opacity: 0;
-  transform: translateY(-6px) scaleX(.4);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
-  pointer-events: none;
-}
-.btn:hover::before{ opacity: 1; transform: translateY(0) scaleX(1); }
 .btn:hover::after{ left: 130%; }
 .btn:active{ transform: scale(.96); }
 .btn-primary{
@@ -514,9 +482,7 @@ img{ max-width:100%; display:block; }
   width: 0;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--purple), var(--purple-2));
-  box-shadow: 0 0 20px rgba(124,58,237,.5);
   transition: transform .45s var(--ease), width .45s var(--ease);
-  animation: glow-pulse 2.4s ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
 }
@@ -530,30 +496,17 @@ img{ max-width:100%; display:block; }
   font-size: .85rem;
   font-weight: 500;
   color: var(--text-dim);
-  background: transparent;
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  border: none;
   border-radius: 999px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none; user-select: none;
-  transition: color .3s var(--ease), border-color .3s var(--ease), transform .22s var(--ease), box-shadow .3s var(--ease), text-shadow .3s var(--ease);
+  transition: color .3s var(--ease), background .3s var(--ease), transform .22s var(--ease);
 }
-.filter-pill::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 14%;
-  width: 72%; height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
-  opacity: 0;
-  transform: translateY(-5px) scaleX(.4);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
-  pointer-events: none;
-}
-.filter-pill:hover::before{ opacity: 1; transform: translateY(0) scaleX(1); }
-.filter-pill:hover{ color: var(--text); border-color: var(--border-hover); transform: translateY(-2px); }
+.filter-pill:hover{ color: var(--text); background: rgba(124,58,237,.35); transform: translateY(-2px); }
 .filter-pill:active{ transform: translateY(0) scale(.93); }
-.filter-pill.active{ color: #fff; border-color: transparent; }
+.filter-pill.active{ color: #fff; }
 
 /* ============================================================
    CARDS GRID
@@ -680,19 +633,6 @@ img{ max-width:100%; display:block; }
   display: inline-flex; align-items:center; gap:6px;
   transition: transform .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), box-shadow .3s var(--ease), filter .3s var(--ease);
 }
-.card-actions a::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 12%;
-  width: 76%; height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
-  opacity: 0;
-  transform: translateY(-5px) scaleX(.4);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
-  pointer-events: none;
-}
-.card-actions a:hover::before{ opacity: 1; transform: translateY(0) scaleX(1); }
 .card-actions a:active{ transform: scale(.95); }
 .action-live{ background: linear-gradient(135deg, var(--purple), #5b21b6); color:#fff; }
 .action-live:hover{ transform: translateY(-2px); }
@@ -870,39 +810,28 @@ img{ max-width:100%; display:block; }
 }
 
 /* ============================================================
-   ENHANCED HOVER GLOW — сильнее выделение всех кнопок
+   ENHANCED HOVER — сильнее выделение всех кнопок (без свечения)
 ============================================================ */
 .btn:hover{
   filter: brightness(1.1);
 }
 .btn-primary:hover{
   transform: translateY(-4px) scale(1.015);
-  box-shadow: 0 18px 42px rgba(124,58,237,.6), 0 0 0 1px rgba(255,255,255,.06) inset;
 }
 .btn-ghost:hover{
   transform: translateY(-4px) scale(1.015);
-  box-shadow: 0 14px 32px rgba(124,58,237,.28);
 }
 
 .pill:hover{
   transform: translateY(-2px) scale(1.05);
 }
-.pill.active{
-  text-shadow: 0 0 16px rgba(168,85,247,.7);
-}
 
 .filter-pill:hover{
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 22px -8px rgba(124,58,237,.45);
-}
-.filter-pill.active{
-  box-shadow: 0 0 22px rgba(124,58,237,.55);
-  text-shadow: 0 0 10px rgba(255,255,255,.4);
 }
 
 .card-actions a:hover{
   filter: brightness(1.12);
-  box-shadow: 0 10px 24px -10px rgba(124,58,237,.55);
 }
 
 .contact-card:hover{
@@ -917,22 +846,20 @@ img{ max-width:100%; display:block; }
 }
 
 /* ============================================================
-   MAGNETIC HOVER — притяжение к курсору + пульсирующее свечение
+   MAGNETIC HOVER — притяжение к курсору (без свечения)
 ============================================================ */
 @media (hover: hover) and (pointer: fine){
 
   .btn, .pill, .filter-pill, .card-actions a, .contact-card, .burger{
-    transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .3s var(--ease),
-                background .3s var(--ease), filter .3s var(--ease), text-shadow .3s var(--ease);
+    transition: transform .35s var(--ease), background .3s var(--ease), filter .3s var(--ease);
   }
   .btn.magnet-active, .pill.magnet-active, .filter-pill.magnet-active,
   .card-actions a.magnet-active, .contact-card.magnet-active, .burger.magnet-active{
-    transition: transform .12s ease-out, box-shadow .35s var(--ease), filter .3s var(--ease);
+    transition: transform .12s ease-out, filter .3s var(--ease);
   }
 
   .btn-primary.magnet-active:hover{
     transform: translate(var(--magnet-x,0px), calc(var(--magnet-y,0px) - 4px)) scale(1.04);
-    animation: glow-breathe 1.4s ease-in-out infinite;
   }
   .btn-ghost.magnet-active:hover{
     transform: translate(var(--magnet-x,0px), calc(var(--magnet-y,0px) - 4px)) scale(1.04);
@@ -942,7 +869,6 @@ img{ max-width:100%; display:block; }
   }
   .filter-pill.magnet-active:hover{
     transform: translate(var(--magnet-x,0px), calc(var(--magnet-y,0px) - 2px)) scale(1.08);
-    animation: glow-breathe 1.4s ease-in-out infinite;
   }
   .card-actions a.magnet-active:hover{
     transform: translate(var(--magnet-x,0px), calc(var(--magnet-y,0px) - 3px)) scale(1.05);
@@ -953,11 +879,6 @@ img{ max-width:100%; display:block; }
   .burger.magnet-active:hover{
     transform: translate(var(--magnet-x,0px), var(--magnet-y,0px)) scale(1.1);
   }
-}
-
-@keyframes glow-breathe{
-  0%,100%{ box-shadow: 0 0 16px rgba(124,58,237,.45), 0 0 0 rgba(57,255,160,0); }
-  50%{ box-shadow: 0 0 28px rgba(124,58,237,.7), 0 0 14px rgba(57,255,160,.35); }
 }
 
 @media (prefers-reduced-motion: reduce){
