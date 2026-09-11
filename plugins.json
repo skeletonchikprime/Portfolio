@@ -62,9 +62,26 @@
     "tech": [
       "Python"
     ],
-    "live_url": "https://t.me/ArtemsPlugin/7",
+    "live_url": "https://t.me/ArtemsPlugin/11",
     "github_status": "none",
     "github_url": null,
     "category": "Анимации"
+  },
+  {
+    "title": "media_filter.plugin",
+    "date": "11.09.2026",
+    "desc": "Визуально скрывает выбранные типы сообщений и выбранных участников чата. Для каждого чата можно отдельно скрывать выбранные типы сообщений",
+    "status": "release",
+    "client": {
+      "name": "@ArtemDevelloper",
+      "link": "https://t.me/ArtemDevelloper"
+    },
+    "tech": [
+      "Python"
+    ],
+    "live_url": "https://t.me/ArtemsPlugin/12",
+    "github_status": "none",
+    "github_url": null,
+    "category": "Медиа"
   }
 ]

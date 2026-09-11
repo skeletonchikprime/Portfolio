@@ -327,6 +327,70 @@
 })();
 
 /* ============================================================
+   MAGNETIC HOVER — кнопка "тянется" к курсору (только desktop)
+============================================================ */
+(function magnetic(){
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!canHover) return;
+
+  const SELECTOR = '.btn, .pill, .filter-pill, .card-actions a, .contact-card, .burger';
+  const STRENGTH = 12; // максимальное смещение в px
+
+  function resetMagnet(el){
+    el.classList.remove('magnet-active');
+    el.style.removeProperty('--magnet-x');
+    el.style.removeProperty('--magnet-y');
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    const el = e.target.closest(SELECTOR);
+    document.querySelectorAll('.magnet-active').forEach(prev => {
+      if (prev !== el) resetMagnet(prev);
+    });
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const relX = (e.clientX - rect.left) / rect.width - 0.5;
+    const relY = (e.clientY - rect.top) / rect.height - 0.5;
+    el.classList.add('magnet-active');
+    el.style.setProperty('--magnet-x', `${relX * STRENGTH}px`);
+    el.style.setProperty('--magnet-y', `${relY * STRENGTH}px`);
+  }, { passive: true });
+
+  document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest(SELECTOR);
+    if (el && (!e.relatedTarget || !el.contains(e.relatedTarget))) resetMagnet(el);
+  });
+})();
+
+/* ============================================================
+   RIPPLE — вспышка от точки клика на всех кнопках
+============================================================ */
+(function ripple(){
+  const SELECTOR = '.btn, .pill, .filter-pill, .burger, .card-actions a, .contact-card';
+
+  function spawnRipple(el, clientX, clientY){
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2.2;
+    const span = document.createElement('span');
+    span.className = 'ripple-fx';
+    span.style.width = span.style.height = `${size}px`;
+    span.style.left = `${clientX - rect.left - size / 2}px`;
+    span.style.top = `${clientY - rect.top - size / 2}px`;
+    el.appendChild(span);
+    span.addEventListener('animationend', () => span.remove(), { once: true });
+    // фолбэк на случай, если animationend не сработает (например, элемент удалён из DOM)
+    setTimeout(() => span.remove(), 900);
+  }
+
+  document.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button > 0) return; // только левая кнопка / тач
+    const el = e.target.closest(SELECTOR);
+    if (!el || el.classList.contains('action-muted')) return;
+    spawnRipple(el, e.clientX, e.clientY);
+  });
+})();
+
+/* ============================================================
    STATUS / GITHUB LABEL MAPS
 ============================================================ */
 const STATUS_MAP = {
@@ -353,6 +417,10 @@ function escapeHtml(str){
 /* ============================================================
    CARD RENDERING (used for both projects.json and plugins.json)
 ============================================================ */
+function normalizeCategory(cat){
+  return String(cat ?? '').trim();
+}
+
 function renderCard(item){
   const st = statusMeta(item.status);
   const tech = Array.isArray(item.tech) ? item.tech : [];
@@ -380,7 +448,7 @@ function renderCard(item){
     : '';
 
   return `
-    <article class="card" data-category="${escapeHtml(item.category || '')}">
+    <article class="card" data-category="${escapeHtml(normalizeCategory(item.category))}">
       <div class="card-top">
         <span class="status ${st.class}"><i class="sdot"></i>${escapeHtml(st.label)}</span>
         ${item.date ? `<span class="date mono">${escapeHtml(item.date)}</span>` : ''}
@@ -422,9 +490,13 @@ const ALL_LABEL = 'Все';
 
 function applyFilter(grid, category){
   const cards = Array.from(grid.querySelectorAll('.card'));
+  const targetKey = category === ALL_LABEL ? null : category.trim().toLowerCase();
   let shownIndex = 0;
+  let visibleCount = 0;
   cards.forEach(card => {
-    const match = category === ALL_LABEL || card.dataset.category === category;
+    const cardKey = (card.dataset.category || '').trim().toLowerCase();
+    const match = targetKey === null || cardKey === targetKey;
+    if (match) visibleCount++;
     if (match){
       card.style.display = '';
       card.classList.remove('card-hidden');
@@ -439,6 +511,10 @@ function applyFilter(grid, category){
       }, 400);
     }
   });
+  if (targetKey !== null && visibleCount === 0){
+    // не ошибка — просто подсказка на случай расхождения данных в JSON
+    console.info(`[filters] По категории "${category}" не найдено совпадений — проверьте значения "category" в JSON.`);
+  }
 }
 
 function moveFilterGlow(bar, glow, pill){
@@ -450,24 +526,27 @@ function moveFilterGlow(bar, glow, pill){
 }
 
 function makeDraggable(bar, onDragEnd){
-  let isDown = false, dragged = false, startX = 0, startScroll = 0;
+  let isDown = false, dragged = false, startX = 0, startY = 0, startScroll = 0;
+  const DRAG_THRESHOLD = 10; // px — суммарное смещение мыши/пальца, а не только по X
 
   bar.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.filter-pill') === null) return;
     isDown = true;
     dragged = false;
     startX = e.clientX;
+    startY = e.clientY;
     startScroll = bar.scrollLeft;
     bar.setPointerCapture(e.pointerId);
   });
   bar.addEventListener('pointermove', (e) => {
     if (!isDown) return;
     const dx = e.clientX - startX;
-    if (Math.abs(dx) > 6){
+    const dy = e.clientY - startY;
+    if (!dragged && Math.hypot(dx, dy) > DRAG_THRESHOLD){
       dragged = true;
       bar.classList.add('dragging');
     }
-    bar.scrollLeft = startScroll - dx;
+    if (dragged) bar.scrollLeft = startScroll - dx;
   });
   const release = () => {
     isDown = false;
@@ -476,19 +555,28 @@ function makeDraggable(bar, onDragEnd){
   };
   bar.addEventListener('pointerup', release);
   bar.addEventListener('pointercancel', release);
-  bar.addEventListener('click', (e) => {
-    if (dragged){ e.preventDefault(); e.stopPropagation(); dragged = false; }
-  }, true);
+
+  // Возвращаем "живое" состояние, а не блокируем клик через stopPropagation —
+  // так основной обработчик клика сам решает, был это драг или обычное нажатие,
+  // и настоящий клик по кнопке никогда не теряется из-за мелкого дрожания мыши.
+  return {
+    get dragged(){ return dragged; },
+    consume(){ dragged = false; }
+  };
 }
 
 function setupFilters(filterBarId, grid, items){
   const bar = document.getElementById(filterBarId);
   if (!bar) return;
 
-  const categories = [];
+  const seen = new Map(); // normalized key -> display label (first-seen casing)
   items.forEach(item => {
-    if (item.category && !categories.includes(item.category)) categories.push(item.category);
+    const label = normalizeCategory(item.category);
+    if (!label) return;
+    const key = label.toLowerCase();
+    if (!seen.has(key)) seen.set(key, label);
   });
+  const categories = Array.from(seen.values());
   if (categories.length === 0){
     bar.parentElement.style.display = 'none';
     return;
@@ -509,22 +597,54 @@ function setupFilters(filterBarId, grid, items){
 
   requestAnimationFrame(() => moveFilterGlow(bar, glow, bar.querySelector('.filter-pill.active')));
 
+  const drag = makeDraggable(bar, () => moveFilterGlow(bar, glow, bar.querySelector('.filter-pill.active')));
+
   bar.addEventListener('click', (e) => {
+    if (drag.dragged){ drag.consume(); return; } // реальный драг горизонтального списка — не считаем кликом
     const btn = e.target.closest('.filter-pill');
     if (!btn || btn.classList.contains('active')) return;
     bar.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     moveFilterGlow(bar, glow, btn);
-    btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     applyFilter(grid, btn.dataset.cat);
+    try {
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    } catch (err) {
+      /* некоторые окружения (старые webview, file://) могут не поддерживать
+         опции scrollIntoView — фильтрация уже выполнена строкой выше, так что
+         это не критично */
+    }
   });
-
-  makeDraggable(bar, () => moveFilterGlow(bar, glow, bar.querySelector('.filter-pill.active')));
 
   window.addEventListener('resize', () => moveFilterGlow(bar, glow, bar.querySelector('.filter-pill.active')));
 }
 
-async function loadData(jsonPath, gridId, filterBarId){
+const PLURAL_FORMS = {
+  projects: ['проект', 'проекта', 'проектов'],
+  plugins: ['плагин', 'плагина', 'плагинов']
+};
+
+function pluralizeRu(n, forms){
+  const abs = Math.abs(n) % 100;
+  const n1 = abs % 10;
+  if (abs > 10 && abs < 20) return forms[2];
+  if (n1 > 1 && n1 < 5) return forms[1];
+  if (n1 === 1) return forms[0];
+  return forms[2];
+}
+
+function updateStatCount(statKey, count){
+  if (!statKey) return;
+  document.querySelectorAll(`.stat-num[data-stat="${statKey}"]`).forEach(el => {
+    el.dataset.count = count;
+    const forms = PLURAL_FORMS[statKey];
+    if (!forms) return;
+    const label = el.closest('.stat-card')?.querySelector('.stat-label');
+    if (label) label.textContent = pluralizeRu(count, forms);
+  });
+}
+
+async function loadData(jsonPath, gridId, filterBarId, statKey){
   const grid = document.getElementById(gridId);
   try {
     const res = await fetch(jsonPath, { cache: 'no-store' });
@@ -533,6 +653,7 @@ async function loadData(jsonPath, gridId, filterBarId){
 
     if (!Array.isArray(items) || items.length === 0){
       grid.innerHTML = `<p class="loader mono">пока пусто — загляните позже</p>`;
+      updateStatCount(statKey, 0);
       return;
     }
 
@@ -540,11 +661,13 @@ async function loadData(jsonPath, gridId, filterBarId){
     observeNewCards(grid);
     attachSpotlight(grid);
     setupFilters(filterBarId, grid, items);
+    updateStatCount(statKey, items.length);
   } catch (err) {
     console.error(`Не удалось загрузить ${jsonPath}:`, err);
     grid.innerHTML = `<p class="loader mono">не удалось загрузить данные (${escapeHtml(jsonPath)})</p>`;
+    // при ошибке загрузки счётчик остаётся со значением по умолчанию из HTML
   }
 }
 
-loadData('projects.json', 'projectsGrid', 'projectsFilter');
-loadData('plugins.json', 'pluginsGrid', 'pluginsFilter');
+loadData('projects.json', 'projectsGrid', 'projectsFilter', 'projects');
+loadData('plugins.json', 'pluginsGrid', 'pluginsFilter', 'plugins');
