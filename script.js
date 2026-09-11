@@ -157,7 +157,7 @@
   const phrases = [
     'Разрабатываю Telegram-ботов',
     'Собираю юзерботов под задачу',
-    'Python · JavaScript · Node.js',
+    'Делаю плагины для етг',
     'От идеи до релиза'
   ];
   let phraseIndex = 0, charIndex = 0, deleting = false;
